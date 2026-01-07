@@ -54,8 +54,9 @@ int main(int argc, char** args){
 		// Criação de formas, preenchimentos entram aqui, por exemplo:
 		SDL_SetRenderDrawColor(renderer, 100, 100, 100, 0);
 		SDL_RenderClear(renderer);
-		CreateButton(janela, renderer, width, height, 10, 10);
-		CreateButton(janela, renderer, width, height, 40, 40);
+		CreateButton(janela, renderer, 50, 50, 0, 0);
+		CreateButton(janela, renderer, 50, 50, 50, 0);
+		cout << a << endl;
 		// Mostra o frame
 		SDL_RenderPresent(renderer);
 		// Reproduz numa taxa de aproximadamente 60 frames por segundo:

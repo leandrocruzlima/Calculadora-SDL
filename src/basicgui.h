@@ -2,7 +2,9 @@
 #define BASICGUI_H
 
 #include <SDL2/SDL.h>
-
+/** 
+ * Renderiza um botão na tela.
+ */
 void CreateButton(
     SDL_Window* janela,
     SDL_Renderer* renderer,
