@@ -1,10 +1,11 @@
-#ifdef GUI_H
-#define GUI_H
+#ifndef BASICGUI_H
+#define BASICGUI_H
 
 #include <SDL2/SDL.h>
 
-CreateButton(
-    SDL_Window* window,
+void CreateButton(
+    SDL_Window* janela,
+    SDL_Renderer* renderer,
     int width,
     int height,
     int x,
