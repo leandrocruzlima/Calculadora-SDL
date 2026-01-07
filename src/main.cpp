@@ -55,13 +55,18 @@ int main(int argc, char** args){
 		SDL_SetRenderDrawColor(renderer, 100, 100, 100, 0);
 
 		SDL_RenderClear(renderer);
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
 		SDL_GetWindowSize(janela, &width, &height);
 		// cout << width << " " << height << endl;
 		// Carregar retângulo
-		SDL_Rect rect {width/2 - 50, height/2 - 50, 100, 100};
+		SDL_Rect rect {width/2, height/2, 50, 50};
 		SDL_RenderFillRect(renderer, &rect);
+
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+
+		SDL_Rect rect2 {width/2 - 5, height/2 - 5, 50, 50};
+		SDL_RenderFillRect(renderer, &rect2);
 
 		// Mostra o frame
 		SDL_RenderPresent(renderer);
