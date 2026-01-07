@@ -18,6 +18,7 @@ int main(int argc, char** args){
 		300, // Altura da janela
 		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE // Configura a janela para ser visível e redimensonável
 	);
+	int width, height;
 	// Checagem
 	if (!janela){
 		cout << "Erro ao criar janela: " << SDL_GetError() << endl;
@@ -51,14 +52,15 @@ int main(int argc, char** args){
 		}
 		
 		// Criação de formas, preenchimentos entram aqui, por exemplo:
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-		SDL_RenderClear(renderer);
 		SDL_SetRenderDrawColor(renderer, 100, 100, 100, 0);
 
+		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 
+		SDL_GetWindowSize(janela, &width, &height);
+		// cout << width << " " << height << endl;
 		// Carregar retângulo
-		SDL_Rect rect {100, 100, 100, 100};
+		SDL_Rect rect {width/2 - 50, height/2 - 50, 100, 100};
 		SDL_RenderFillRect(renderer, &rect);
 
 		// Mostra o frame
