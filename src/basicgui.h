@@ -11,7 +11,8 @@ void CreateButton(
     int width,
     int height,
     int x,
-    int y
+    int y,
+    int mouse[2]
 );
 
 #endif

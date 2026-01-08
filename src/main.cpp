@@ -5,6 +5,7 @@
 using namespace std;
 
 int main(int argc, char** args){
+	int mouse[2] = {};
 	// Inicializa SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		cout << "Erro ao inicializar SDL: " << SDL_GetError() << endl;
@@ -15,7 +16,7 @@ int main(int argc, char** args){
 		"XZip v1",
 		SDL_WINDOWPOS_CENTERED, // Posição horizontal da janela
 		SDL_WINDOWPOS_CENTERED, // Posição vertical da janela
-		300, // Largura da janela
+		500, // Largura da janela
 		300, // Altura da janela
 		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE // Configura a janela para ser visível e redimensonável
 	);
@@ -50,13 +51,18 @@ int main(int argc, char** args){
 				// Encerra o loop, encerrando todo o programa com isso:
 				rodando = false;
 			}
+			if (evento.type == SDL_MOUSEMOTION) {
+				mouse[0] = evento.motion.x;
+				mouse[1] = evento.motion.y;
+				cout << "Mouse detected - " << "x: " << mouse[0] << " y: " << mouse[1] << endl;
+
+			}
 		}
 		// Criação de formas, preenchimentos entram aqui, por exemplo:
 		SDL_SetRenderDrawColor(renderer, 100, 100, 100, 0);
 		SDL_RenderClear(renderer);
-		CreateButton(janela, renderer, 50, 50, 0, 0);
-		CreateButton(janela, renderer, 50, 50, 50, 0);
-		cout << a << endl;
+		CreateButton(janela, renderer, 50, 50, 0, 0, mouse);
+		CreateButton(janela, renderer, 50, 50, 100, 0, mouse);
 		// Mostra o frame
 		SDL_RenderPresent(renderer);
 		// Reproduz numa taxa de aproximadamente 60 frames por segundo:
