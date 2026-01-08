@@ -5,14 +5,14 @@
 /** 
  * Renderiza um botão na tela.
  */
-void CreateButton(
+void BG_CreateButton(
     SDL_Window* janela,
     SDL_Renderer* renderer,
     int width,
     int height,
     int x,
     int y,
-    int mouse[2]
+    int mouse[3]
 );
 
 #endif

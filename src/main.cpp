@@ -5,7 +5,7 @@
 using namespace std;
 
 int main(int argc, char** args){
-	int mouse[2] = {};
+	int mouse[3] = {};
 	// Inicializa SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		cout << "Erro ao inicializar SDL: " << SDL_GetError() << endl;
@@ -54,20 +54,28 @@ int main(int argc, char** args){
 			if (evento.type == SDL_MOUSEMOTION) {
 				mouse[0] = evento.motion.x;
 				mouse[1] = evento.motion.y;
-				cout << "Mouse detected - " << "x: " << mouse[0] << " y: " << mouse[1] << endl;
+				//cout << "Mouse detected - " << "x: " << mouse[0] << " y: " << mouse[1] << endl;
 
 			}
+			if (evento.type == SDL_MOUSEBUTTONDOWN) {
+				mouse[2] = 1;
+			}
+			if (evento.type == SDL_MOUSEBUTTONUP) {
+				mouse[2] = 0;
+			}
 		}
+		cout << mouse[2] << endl;
 		// Criação de formas, preenchimentos entram aqui, por exemplo:
 		SDL_SetRenderDrawColor(renderer, 100, 100, 100, 0);
 		SDL_RenderClear(renderer);
-		CreateButton(janela, renderer, 50, 50, 0, 0, mouse);
-		CreateButton(janela, renderer, 50, 50, 100, 0, mouse);
+		BG_CreateButton(janela, renderer, 50, 50, 0, 0, mouse);
+		BG_CreateButton(janela, renderer, 50, 50, 100, 0, mouse);
 		// Mostra o frame
 		SDL_RenderPresent(renderer);
 		// Reproduz numa taxa de aproximadamente 60 frames por segundo:
 		SDL_Delay(16);
 	}
+
 	// Aqui é o que é executado depois da while ser rompida
 	SDL_DestroyWindow(janela); // Destrói a janela
 	SDL_DestroyRenderer(renderer); // Destrói o renderizador

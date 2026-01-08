@@ -1,13 +1,16 @@
 #include "basicgui.h"
+#include <iostream>
 
-void CreateButton(
+using namespace std;
+
+void BG_CreateButton(
     SDL_Window* janela,
     SDL_Renderer* renderer,
     int width,
     int height,
     int x,
     int y,
-    int mouse[2]
+    int mouse[3]
 ) {
         int swidth, sheight;
         // Sombra
@@ -17,7 +20,12 @@ void CreateButton(
 		SDL_RenderFillRect(renderer, &rect);
         // Luz do botão
         if (mouse[0] >= swidth/2 - x - 5 and mouse[0] <= swidth/2 - x - 5 + width and mouse[1] >= sheight/2 - y - 5 and mouse[1] <= sheight/2 - y - 5 + height){
-		    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 0);
+            if (mouse[2] == 1){
+		        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 0);
+            } else {
+                SDL_SetRenderDrawColor(renderer, 200, 200, 200, 0);
+            }
+
         } else {
 		    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
         }
