@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "basicgui.h"
 
 using namespace std;
@@ -7,18 +8,21 @@ using namespace std;
 int main(int argc, char** args){
 	int mouse[3] = {};
 	// Inicializa SDL
+	
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		cout << "Erro ao inicializar SDL: " << SDL_GetError() << endl;
 		return 1;
 	}
+	TTF_Init();
+
 	// Inicializa janela
 	SDL_Window* janela = SDL_CreateWindow(
-		"XZip v1",
+		"Calculadora SDL",
 		SDL_WINDOWPOS_CENTERED, // Posição horizontal da janela
 		SDL_WINDOWPOS_CENTERED, // Posição vertical da janela
-		500, // Largura da janela
-		300, // Altura da janela
-		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE // Configura a janela para ser visível e redimensonável
+		250, // Largura da janela
+		400, // Altura da janela
+		SDL_WINDOW_SHOWN // Configura a janela para ser visível e redimensonável
 	);
 	int width, height;
 	// Checagem
@@ -38,6 +42,8 @@ int main(int argc, char** args){
 		return 1;
 	}
 	
+	BG_Init();
+
 	// loop
 	// Cria-se uma variável booleana, que fará o loop repetir no momento em que ela se torna falsa:
 	bool rodando = true;
@@ -64,12 +70,23 @@ int main(int argc, char** args){
 				mouse[2] = 0;
 			}
 		}
-		cout << mouse[2] << endl;
+		// cout << mouse[2] << endl;
 		// Criação de formas, preenchimentos entram aqui, por exemplo:
 		SDL_SetRenderDrawColor(renderer, 100, 100, 100, 0);
 		SDL_RenderClear(renderer);
-		BG_CreateButton(janela, renderer, 50, 50, 0, 0, mouse);
-		BG_CreateButton(janela, renderer, 50, 50, 100, 0, mouse);
+		// Primeiros botões (Prototipagem)
+		BG_CreateButton(janela, renderer, 50, 50, 110, 10, mouse, "7");
+		BG_CreateButton(janela, renderer, 50, 50, 55, 10, mouse, "8");
+		BG_CreateButton(janela, renderer, 50, 50, 0, 10, mouse, "9");
+		BG_CreateButton(janela, renderer, 50, 50, -55, 10, mouse, "C");
+		BG_CreateButton(janela, renderer, 50, 50, 110, -45, mouse, "4");
+		BG_CreateButton(janela, renderer, 50, 50, 55, -45, mouse, "5");
+		BG_CreateButton(janela, renderer, 50, 50, 0, -45, mouse, "6");
+		BG_CreateButton(janela, renderer, 50, 50, 110, -100, mouse, "1");
+		BG_CreateButton(janela, renderer, 50, 50, 55, -100, mouse, "2");
+		BG_CreateButton(janela, renderer, 50, 50, 0, -100, mouse, "3");
+
+
 		// Mostra o frame
 		SDL_RenderPresent(renderer);
 		// Reproduz numa taxa de aproximadamente 60 frames por segundo:
@@ -79,6 +96,8 @@ int main(int argc, char** args){
 	// Aqui é o que é executado depois da while ser rompida
 	SDL_DestroyWindow(janela); // Destrói a janela
 	SDL_DestroyRenderer(renderer); // Destrói o renderizador
+	BG_Shutdown(); // Fecha fontes de basicgui.cpp
+	TTF_Quit(); // Fecha fontes e texturas
 	SDL_Quit(); // Fecha o SDL
 	return 0;
 }
