@@ -2,10 +2,98 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include "basicgui.h"
+#include <tuple>
+#include <string>
+#include <cstdlib>
+#include <cmath>
 
 using namespace std;
 
+const char* RenderButtons(
+	SDL_Window* janela,
+	SDL_Renderer* renderer,
+	int mouse[3],
+	SDL_Event* evento
+) {
+	// Variáveis da posição da grade em relação a tela
+	int gridbuttonx{110}, gridbuttony{10};
+	// Cria uma grid 3x4 dos números
+	const char* numpad[12] = {
+		"7", "8", "9",
+		"4", "5", "6",
+		"1", "2", "3",
+		"X", "0", "X"
+	};
+	// Botões da grid
+	const char* result = nullptr;
+	for (int a = 0; a < 4; a++) {
+		for (int b = 0; b < 3; b++) {
+				if (numpad[a*3+b] != "X") {
+
+				auto [k, l] = BG_CreateButton(janela, renderer, 50, 50, gridbuttonx, gridbuttony, mouse, numpad[a * 3 + b], numpad[a * 3 + b], evento);
+				
+				if (k && mouse[2] == 1){
+					mouse[2] = 2;
+					result = l;
+				}
+			}
+			gridbuttonx -= 55;
+		}
+		gridbuttonx = 110;
+		gridbuttony -= 55;
+	}
+	gridbuttony = 10;
+
+	return result;
+}
+
+long double operand(
+	long double var1,
+	long double var2,
+	int STAGE
+){
+	if (STAGE == 1) {
+		var1 += var2;
+	}
+	if (STAGE == 2) {
+		var1 -= var2;
+	}
+	if (STAGE == 3) {
+		var1 *= var2;
+	}
+	if (STAGE == 4) {
+		if (var2 != 0){
+			var1 /= var2;
+		} else {
+			var1 = 0;
+		}
+	}
+	return var1;
+}
+
 int main(int argc, char** args){
+	// Variáveis a serem inicializadas
+
+	/**
+	* 	STAGE:
+    * 		0: NULL
+	* 		1: SOMA
+	* 		2: SUBTRAÇÃO
+	* 		3: MULTPLICAÇÃO
+	* 		4: DIVISÃO
+	*/
+
+	int STAGE = 0;
+
+	double valores[2] = {};
+	int valores_pointer = 0;
+	long double r = 0.0;
+	const char* operators[4] = {"+", "-", "×", "÷"};
+
+	string fdisplay = " ";
+	int counter = 1;
+
+	
 	int mouse[3] = {};
 	// Inicializa SDL
 	
@@ -21,8 +109,8 @@ int main(int argc, char** args){
 		SDL_WINDOWPOS_CENTERED, // Posição horizontal da janela
 		SDL_WINDOWPOS_CENTERED, // Posição vertical da janela
 		250, // Largura da janela
-		400, // Altura da janela
-		SDL_WINDOW_SHOWN // Configura a janela para ser visível e redimensonável
+		410, // Altura da janela
+		SDL_WINDOW_SHOWN // Permite a tela ser visível
 	);
 	int width, height;
 	// Checagem
@@ -60,7 +148,6 @@ int main(int argc, char** args){
 			if (evento.type == SDL_MOUSEMOTION) {
 				mouse[0] = evento.motion.x;
 				mouse[1] = evento.motion.y;
-				//cout << "Mouse detected - " << "x: " << mouse[0] << " y: " << mouse[1] << endl;
 
 			}
 			if (evento.type == SDL_MOUSEBUTTONDOWN) {
@@ -70,21 +157,76 @@ int main(int argc, char** args){
 				mouse[2] = 0;
 			}
 		}
-		// cout << mouse[2] << endl;
 		// Criação de formas, preenchimentos entram aqui, por exemplo:
 		SDL_SetRenderDrawColor(renderer, 100, 100, 100, 0);
 		SDL_RenderClear(renderer);
-		// Primeiros botões (Prototipagem)
-		BG_CreateButton(janela, renderer, 50, 50, 110, 10, mouse, "7");
-		BG_CreateButton(janela, renderer, 50, 50, 55, 10, mouse, "8");
-		BG_CreateButton(janela, renderer, 50, 50, 0, 10, mouse, "9");
-		BG_CreateButton(janela, renderer, 50, 50, -55, 10, mouse, "C");
-		BG_CreateButton(janela, renderer, 50, 50, 110, -45, mouse, "4");
-		BG_CreateButton(janela, renderer, 50, 50, 55, -45, mouse, "5");
-		BG_CreateButton(janela, renderer, 50, 50, 0, -45, mouse, "6");
-		BG_CreateButton(janela, renderer, 50, 50, 110, -100, mouse, "1");
-		BG_CreateButton(janela, renderer, 50, 50, 55, -100, mouse, "2");
-		BG_CreateButton(janela, renderer, 50, 50, 0, -100, mouse, "3");
+		//Captura o resultado de cada botão
+		const char* result = RenderButtons(janela, renderer, mouse, &evento);
+		const char* lastresult;
+		if (result != nullptr) {
+			if (counter < 16) {
+				fdisplay += result;
+				counter += 1;
+			}
+		}
+		// Cria os operadores
+		for (int i = 0; i < 4; i++){
+			auto [k, l] = BG_CreateButton(janela, renderer, 50, 50, -65, 10 - i * 55, mouse, operators[i], operators[i], &evento);
+			if (k && mouse[2] == 1 and fdisplay != " ") {
+				mouse[2] = 2;
+				STAGE = i+1;
+				counter = 0;
+
+				if (valores_pointer < 2) {
+					valores[valores_pointer] = stold(fdisplay);
+					fdisplay = " ";
+				}
+				
+				valores_pointer += 1;
+				if (result != nullptr){
+					string temp = result;
+					if (temp.empty() && isdigit(temp[0])) {
+						valores[valores_pointer] = stold(temp);
+						fdisplay = " ";
+					}
+				}
+				if (valores_pointer >= 2){
+					r = operand(valores[0], valores[1], STAGE);
+					if (r == static_cast<long long>(r)){
+						fdisplay = to_string(static_cast<long long>(r));
+					} else {
+						fdisplay = to_string(r);
+					}
+					valores_pointer = 0;
+					valores[1] = 0;
+				}
+
+			}
+		}
+		auto [f, g] = BG_CreateButton(janela, renderer, 50, 50, 0, -155, mouse, "=", "=", &evento);
+		if (f && mouse[2] == 1 and fdisplay != " ") {
+			mouse[2] = 2;
+			if (valores_pointer == 1) {
+				r = operand(valores[0], stold(fdisplay), STAGE);
+				valores[0] = r;
+				if (r == static_cast<long long>(r)){
+					fdisplay = to_string(static_cast<long long>(r));
+				} else {
+					fdisplay = to_string(valores[0]);
+					cout << valores[0] << ", " << valores[1] << endl << STAGE << endl << fdisplay << "\n\n";
+				}
+				valores_pointer = 0;
+				counter = 0;
+			}
+		}
+		auto [a, b] = BG_CreateButton(janela, renderer, 50, 50, 110, -155, mouse, "C", "C", &evento);
+		if (a && mouse[2] == 1) {
+			valores[2] = {};
+			fdisplay = " ";
+			counter = 0;
+			valores_pointer = 0;
+		}
+		BG_CreateTextBar(janela, renderer, 230, 140, 110, 170, fdisplay.c_str());
 
 
 		// Mostra o frame

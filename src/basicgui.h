@@ -4,6 +4,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <tuple>
 /*
  * Inicializa
 */
@@ -15,7 +16,7 @@ void BG_Shutdown();
 /** 
  * Renderiza um botão na tela.
  */
-void BG_CreateButton(
+std::tuple<bool, const char*> BG_CreateButton(
     SDL_Window* janela,
     SDL_Renderer* renderer,
     int width,
@@ -23,7 +24,19 @@ void BG_CreateButton(
     int x,
     int y,
     int mouse[3],
-    const char* text
+    const char* text,
+    const char* id,
+    SDL_Event* event
+);
+
+void BG_CreateTextBar(
+    SDL_Window* janela,
+    SDL_Renderer* renderer,
+    int w,
+    int h,
+    int x,
+    int y,
+    const char* value
 );
 
 #endif
