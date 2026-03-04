@@ -15,7 +15,7 @@ No terminal, digite:
 
 ```shell
 git clone https://github.com/leandrocruzlima/Calculadora-SDL
-cd Calculadora-SDL
+cd Calculadora-SDL/src
 ```
 
 ---
